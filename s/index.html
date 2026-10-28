@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ouça no Sonus</title>
+<meta name="description" content="Alguém te mandou uma música pelo Sonus.">
+<meta property="og:title" content="Ouça no Sonus">
+<meta property="og:description" content="Alguém te mandou uma música pelo Sonus.">
+<meta property="og:type" content="music.song">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" href="../logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilo.css">
+<style>
+  /* Página de um link compartilhado pelo Sonus. Quem tem o app nem chega aqui (o Android abre o Sonus direto);
+     quem não tem vê a capa, ouve no YouTube Music ou baixa o Sonus. Tudo vem do próprio link:
+     m=vídeo · al=álbum (lista) · ar=artista (canal) · q=busca · n=nome · a=artista · c=capa · tp=artista|album */
+  .fundo { position: fixed; inset: -10%; background: center/cover no-repeat; filter: blur(60px) saturate(1.4); opacity: .6; transform: scale(1.1); }
+  .fundo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 14, 16, .25) 0%, rgba(14, 14, 16, .7) 55%, var(--bg) 92%); }
+  .miolo { min-height: 100vh; display: flex; flex-direction: column; }
+  .capa {
+    width: min(76vw, 320px); aspect-ratio: 1; margin: 34px auto 0; border-radius: 22px; overflow: hidden;
+    background: linear-gradient(135deg, #3b82ff, #1d4ed8) center/cover; box-shadow: 0 30px 70px rgba(0, 0, 0, .55);
+    display: grid; place-items: center;
+  }
+  .capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .capa img.video { transform: scale(1.78); }      /* miniatura do YouTube: a capa quadrada fica no meio, com faixas pretas */
+  .capa .logo { width: 44%; opacity: .9; }
+  .capa.redonda { border-radius: 50%; }
+  .info { text-align: center; margin-top: 26px; }
+  .tipo { font-size: 12px; font-weight: 800; letter-spacing: .16em; color: var(--fg3); }
+  .info h1 { font-size: 28px; font-weight: 800; line-height: 1.15; margin-top: 8px; overflow-wrap: anywhere; }
+  .info .quem { margin-top: 6px; font-size: 17px; color: var(--fg2); }
+  .acoes { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
+  .acoes .botao.claro img { width: 24px; height: 24px; border-radius: 7px; }
+  .yt { width: 22px; height: 22px; }
+  .sem-app { margin-top: 34px; padding: 18px; border-radius: 22px; background: rgba(255, 255, 255, .07); backdrop-filter: blur(20px); display: flex; gap: 14px; align-items: center; text-decoration: none; }
+  .sem-app img { width: 48px; height: 48px; border-radius: 13px; flex: none; }
+  .sem-app b { display: block; font-family: "SonusTitulo", sans-serif; font-size: 16px; }
+  .sem-app span { display: block; color: var(--fg2); font-size: 14px; margin-top: 2px; }
+  .sem-app .seta { margin-left: auto; font-size: 22px; color: var(--fg3); }
+  .espaco { flex: 1; }
+  .ios { text-align: center; margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="fundo" id="fundo"></div>
+<main class="miolo">
+  <a class="marca" href="../"><img src="../logo.svg" alt="">Sonus</a>
+  <div class="capa" id="capa"><img class="logo" src="../logo.svg" alt=""></div>
+  <div class="info">
+    <div class="tipo" id="tipo">MÚSICA</div>
+    <h1 id="nome">Ouça no Sonus</h1>
+    <div class="quem" id="quem"></div>
+  </div>
+  <div class="acoes">
+    <a class="botao claro" id="abrirApp" href="#"><img src="../logo.svg" alt=""><span id="textoApp">Ouvir no Sonus</span></a>
+    <a class="botao contorno" id="abrirYt" href="https://music.youtube.com/" rel="noopener">
+      <svg class="yt" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ff0033"/><circle cx="12" cy="12" r="6.2" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M10.2 9.2v5.6L15 12z" fill="#fff"/></svg>
+      <span id="textoYt">Ouvir no YouTube Music</span>
+    </a>
+  </div>
+  <p class="pequeno ios oculto" id="soAndroid">O Sonus é só para Android.</p>
+  <div class="espaco"></div>
+  <a class="sem-app" href="../#baixar">
+    <img src="../logo.svg" alt="">
+    <div><b>Ainda não tem o Sonus?</b><span>Baixe grátis e veja como instalar.</span></div>
+    <div class="seta" aria-hidden="true">›</div>
+  </a>
+</main>
+<script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  const id = (q.get("m") || "").match(/^[A-Za-z0-9_-]{11}$/)?.[0];
+  const album = (q.get("al") || "").match(/^[A-Za-z0-9_-]+$/)?.[0];
+  const canal = (q.get("ar") || "").match(/^UC[A-Za-z0-9_-]{22}$/)?.[0];
+  const busca = q.get("q") || "";
+  const nome = q.get("n") || "", quem = q.get("a") || "";
+  const tipo = id ? "musica" : album ? "album" : canal ? "artista" : q.get("tp") === "artista" ? "artista" : q.get("tp") === "album" ? "album" : "musica";
+
+  const $ = i => document.getElementById(i);
+  $("tipo").textContent = { musica: "MÚSICA", album: "ÁLBUM", artista: "ARTISTA" }[tipo];
+  if (nome) { $("nome").textContent = nome; document.title = `${nome}${quem ? " · " + quem : ""} — Sonus`; }
+  $("quem").textContent = quem;
+  if (tipo === "artista") { $("capa").classList.add("redonda"); $("textoApp").textContent = "Abrir no Sonus"; $("textoYt").textContent = "Ver no YouTube Music"; }
+  if (tipo === "album") $("textoApp").textContent = "Abrir no Sonus";
+
+  // capa: o link traz só o pedaço do endereço do Google ("y/…" = yt3.ggpht.com); sem ele, a miniatura do vídeo
+  const c = (q.get("c") || "").match(/^(y\/)?[A-Za-z0-9_-]+$/)?.[0];
+  const capa = c ? (c.startsWith("y/") ? `https://yt3.ggpht.com/${c.slice(2)}=s800` : `https://lh3.googleusercontent.com/${c}=w800-h800`)
+    : id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
+  if (capa) {
+    const img = new Image();
+    img.alt = nome ? `Capa de ${nome}` : "";
+    if (!c) img.className = "video";
+    img.onload = () => { $("capa").replaceChildren(img); $("fundo").style.backgroundImage = `url("${capa}")`; };
+    img.src = capa;
+  }
+
+  // YouTube Music
+  const YTM = "https://music.youtube.com";
+  $("abrirYt").href = id ? `${YTM}/watch?v=${id}` : album ? `${YTM}/playlist?list=${album}` : canal ? `${YTM}/channel/${canal}`
+    : `${YTM}/search?q=${encodeURIComponent(busca || `${quem} ${nome}`.trim())}`;
+
+  // Sonus: no Android, o intent abre o app; sem o app, o Chrome vai para a página de baixar
+  if (/Android/i.test(navigator.userAgent)) {
+    const baixar = new URL("../#baixar", location.href).href;
+    $("abrirApp").href = `intent://${location.host}${location.pathname}${location.search}#Intent;scheme=https;package=app.sounos;S.browser_fallback_url=${encodeURIComponent(baixar)};end`;
+  } else {
+    $("abrirApp").classList.add("oculto");
+    $("soAndroid").classList.remove("oculto");
+  }
+})();
+</script>
+</body>
+</html>

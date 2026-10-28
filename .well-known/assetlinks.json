@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.sounos",
+    "sha256_cert_fingerprints": ["B7:DF:87:56:A7:A4:64:75:2F:70:47:CA:FE:08:EE:3C:FE:9E:4A:49:C7:4B:45:D0:CF:06:E8:E0:3A:47:2B:A8"]
+  }
+}]

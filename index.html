@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sonus — baixar para Android</title>
+<meta name="description" content="Baixe o Sonus, app de música para Android, e veja como instalar.">
+<meta property="og:title" content="Sonus">
+<meta property="og:description" content="App de música para Android. Baixe e veja como instalar.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  /* Página de baixar: o arquivo e a versão vêm do update.json (o mesmo que o app usa para se atualizar),
+     então o botão aponta sempre para a última versão publicada. */
+  body { background: radial-gradient(120% 60% at 50% 0%, rgba(59, 130, 255, .28), transparent 70%), var(--bg); }
+  .topo { text-align: center; padding-top: 34px; }
+  .icone { width: 96px; height: 96px; border-radius: 26px; box-shadow: 0 18px 50px rgba(29, 78, 216, .5); }
+  .topo h1 { font-size: 40px; font-weight: 800; margin-top: 18px; }
+  .topo p { margin: 6px 0 0; color: var(--fg2); font-size: 17px; }
+  .versao { display: inline-flex; gap: 6px; align-items: center; margin-top: 16px; padding: 6px 12px; border-radius: 99px; background: var(--cartao); font-size: 13px; font-weight: 700; color: var(--fg2); }
+  .versao b { color: #ffd27a; font-weight: 800; }
+  .baixar { margin-top: 26px; }
+  .baixar .pequeno { text-align: center; margin: 10px 0 0; }
+  .aviso-ios { margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: var(--cartao); color: var(--fg2); font-size: 15px; text-align: center; }
+
+  h2 { font-size: 22px; font-weight: 700; margin: 44px 0 6px; }
+  h2 + .pequeno { margin: 0 0 18px; }
+  ol.passos { list-style: none; margin: 0; padding: 0; counter-reset: p; display: flex; flex-direction: column; gap: 14px; }
+  .passos li { counter-increment: p; position: relative; padding: 16px 16px 16px 58px; border-radius: 20px; background: var(--cartao); }
+  .passos li::before {
+    content: counter(p); position: absolute; left: 16px; top: 16px; width: 28px; height: 28px; border-radius: 14px;
+    display: grid; place-items: center; background: var(--azul); color: #fff; font: 800 14px/1 "SonusTitulo", sans-serif;
+  }
+  .passos h3 { font-size: 16px; font-weight: 700; }
+  .passos p { margin: 4px 0 0; color: var(--fg2); font-size: 15px; }
+  .passos .talvez { display: inline-block; margin-bottom: 4px; font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--fg3); }
+
+  /* miniatura do aviso do Android, com o botão certo marcado */
+  .tela { margin-top: 12px; padding: 14px 14px 10px; border-radius: 18px; background: #26262b; box-shadow: 0 8px 24px rgba(0, 0, 0, .35); font-size: 13px; }
+  .tela .t { font-weight: 700; color: #fff; font-size: 14px; }
+  .tela .d { color: rgba(255, 255, 255, .62); margin-top: 4px; line-height: 1.35; }
+  .tela .bts { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .tela .bts span { padding: 8px 10px; border-radius: 99px; color: #8fb4ff; font-weight: 700; }
+  .tela .bts span.este { background: rgba(59, 130, 255, .2); box-shadow: 0 0 0 2px #3b82ff; color: #fff; }
+  .tela .chave { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 8px 0 4px; border-top: 1px solid rgba(255, 255, 255, .08); color: #fff; font-weight: 600; }
+  .tela .chave i { width: 38px; height: 22px; border-radius: 11px; flex: none; position: relative; background: #3b82ff; box-shadow: 0 0 0 2px #26262b, 0 0 0 4px #3b82ff; }
+  .tela .chave i::after { content: ""; position: absolute; right: 3px; top: 3px; width: 16px; height: 16px; border-radius: 8px; background: #fff; }
+  .tela .chave i.desl { background: #5b5b62; box-shadow: 0 0 0 2px #26262b, 0 0 0 4px #3b82ff; }
+  .tela .chave i.desl::after { right: auto; left: 3px; }
+  .caminho { margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--fg); }
+  .caminho span { color: var(--fg3); font-weight: 600; }
+
+  .novidades { margin: 0; padding: 0; list-style: none; }
+  .novidades h3 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg3); margin: 18px 0 8px; }
+  .novidades li { position: relative; padding: 6px 0 6px 18px; color: var(--fg2); font-size: 15px; border-bottom: 1px solid var(--linha); }
+  .novidades li::before { content: ""; position: absolute; left: 2px; top: 15px; width: 6px; height: 6px; border-radius: 3px; background: var(--azul); }
+  footer { margin-top: 44px; text-align: center; }
+</style>
+</head>
+<body>
+<main class="miolo">
+  <header class="topo">
+    <img class="icone" src="logo.svg" alt="">
+    <h1>Sonus</h1>
+    <p>App de música para Android</p>
+    <div class="versao" id="versao" hidden></div>
+  </header>
+
+  <section class="baixar" id="baixar">
+    <a class="botao azul" id="botaoBaixar" href="#" aria-disabled="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>
+      <span id="textoBaixar">Procurando a última versão…</span>
+    </a>
+    <p class="pequeno" id="detalheBaixar">Grátis. Depois de instalado, o próprio Sonus avisa quando tiver versão nova.</p>
+    <div class="aviso-ios oculto" id="avisoOutro">O Sonus é só para Android. Abra esta página no celular Android para baixar.</div>
+  </section>
+
+  <h2 id="instalar">Como instalar</h2>
+  <p class="pequeno">O Sonus não vem da Play Store, então o Android pede algumas confirmações. É só na primeira vez.</p>
+  <ol class="passos">
+    <li>
+      <h3>Baixe o arquivo</h3>
+      <p>Toque em <b>Baixar o Sonus</b>. Se o navegador avisar que o arquivo pode ser perigoso, toque em <b>Baixar mesmo assim</b>.</p>
+      <div class="tela" aria-hidden="true">
+        <div class="t">Baixar arquivo mesmo assim?</div>
+        <div class="d">Este tipo de arquivo pode danificar o dispositivo.</div>
+        <div class="bts"><span>Cancelar</span><span class="este">Baixar mesmo assim</span></div>
+      </div>
+    </li>
+    <li>
+      <h3>Abra o arquivo</h3>
+      <p>Toque em <b>Abrir</b> quando o download terminar. Se sumir, abra <b>Meus arquivos › Downloads</b> e toque em <b id="nomeArquivo">Sonus.apk</b>.</p>
+    </li>
+    <li>
+      <span class="talvez">SE APARECER</span>
+      <h3>Permita instalar deste navegador</h3>
+      <p>Toque em <b>Configurações</b>, ligue <b>Permitir desta fonte</b> e volte.</p>
+      <div class="tela" aria-hidden="true">
+        <div class="t">Instalar apps desconhecidos</div>
+        <div class="chave">Permitir desta fonte <i></i></div>
+      </div>
+    </li>
+    <li>
+      <span class="talvez">SE APARECER · SAMSUNG</span>
+      <h3>Desligue o Bloqueador automático</h3>
+      <p>Nos Samsung ele bloqueia apps de fora da loja. Desligue, instale o Sonus e, se quiser, ligue de novo depois.</p>
+      <div class="caminho">Configurações <span>›</span> Segurança e privacidade <span>›</span> Bloqueador automático</div>
+      <div class="tela" aria-hidden="true">
+        <div class="t">Bloqueador automático</div>
+        <div class="chave">Ativado <i class="desl"></i></div>
+      </div>
+    </li>
+    <li>
+      <span class="talvez">SE APARECER</span>
+      <h3>Passe pelo Play Protect</h3>
+      <p>O Google avisa porque não conhece o Sonus. Toque em <b>Mais detalhes</b> e depois em <b>Instalar mesmo assim</b>.</p>
+      <div class="tela" aria-hidden="true">
+        <div class="t">App não verificado</div>
+        <div class="d">O Play Protect não conhece o desenvolvedor deste app.</div>
+        <div class="bts"><span>Mais detalhes</span><span class="este">Instalar mesmo assim</span></div>
+      </div>
+    </li>
+    <li>
+      <h3>Instale e abra</h3>
+      <p>Toque em <b>Instalar</b> e depois em <b>Abrir</b>. Links do Sonus que te mandarem passam a abrir direto no app.</p>
+    </li>
+  </ol>
+
+  <section id="blocoNovidades" hidden>
+    <h2>Nesta versão</h2>
+    <div class="novidades" id="novidades"></div>
+  </section>
+
+  <footer><span class="pequeno">Sonus</span></footer>
+</main>
+<script src="baixar.js"></script>
+<script>
+SonusBaixar.ultima().then(v => {
+  const botao = document.getElementById("botaoBaixar");
+  if (!v) { document.getElementById("textoBaixar").textContent = "Não consegui achar a versão agora"; return; }
+  botao.href = v.apk;
+  botao.removeAttribute("aria-disabled");
+  document.getElementById("textoBaixar").textContent = "Baixar o Sonus";
+  document.getElementById("detalheBaixar").textContent = `${v.tamanho} · ${v.data}. Depois de instalado, o próprio Sonus avisa quando tiver versão nova.`;
+  document.getElementById("nomeArquivo").textContent = v.arquivo;
+  const ver = document.getElementById("versao");
+  ver.innerHTML = v.nomeHtml; ver.hidden = false;
+  if (v.notas.length) {
+    const esc = t => t.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    let html = "", aberta = false;
+    v.notas.forEach(n => {
+      if (n.startsWith("## ")) { if (aberta) html += "</ul>"; html += `<h3>${esc(n.slice(3))}</h3><ul class="novidades">`; aberta = true; }
+      else { if (!aberta) { html += `<ul class="novidades">`; aberta = true; } html += `<li>${esc(n)}</li>`; }
+    });
+    if (aberta) html += "</ul>";
+    document.getElementById("novidades").innerHTML = html;
+    document.getElementById("blocoNovidades").hidden = false;
+  }
+});
+if (!SonusBaixar.android) document.getElementById("avisoOutro").classList.remove("oculto");
+</script>
+</body>
+</html>
